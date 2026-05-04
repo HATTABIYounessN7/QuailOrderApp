@@ -15,8 +15,7 @@ class ProductRepository {
       price: 35.00,
       category: ProductCategory.quail,
       imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/'
-          'Coturnix_japonica_-_1.jpg/320px-Coturnix_japonica_-_1.jpg',
+          'https://upload.wikimedia.org/wikipedia/commons/8/8d/Coturnix_coturnix_%28Lmbuga%29_%28cropped%29.jpg?_=20180905162423',
       inStock: true,
       stockCount: 40,
       unit: 'per bird',
@@ -26,12 +25,11 @@ class ProductRepository {
       name: 'Laying Quail Hen',
       description:
           'Female quail selected for high egg production. '
-          'Approx. 280-300 eggs per year. Age: 6-8 weeks.',
+          'Approx. 280-200 eggs per year. Age: 6-8 weeks.',
       price: 50.00,
       category: ProductCategory.quail,
       imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/'
-          'Coturnix_japonica_-_1.jpg/320px-Coturnix_japonica_-_1.jpg',
+          'https://upload.wikimedia.org/wikipedia/commons/8/8d/Coturnix_coturnix_%28Lmbuga%29_%28cropped%29.jpg?_=20180905162423',
       inStock: true,
       stockCount: 20,
       unit: 'per bird',
@@ -45,8 +43,7 @@ class ProductRepository {
       price: 90.00,
       category: ProductCategory.quail,
       imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/'
-          'Coturnix_japonica_-_1.jpg/320px-Coturnix_japonica_-_1.jpg',
+          'https://upload.wikimedia.org/wikipedia/commons/8/8d/Coturnix_coturnix_%28Lmbuga%29_%28cropped%29.jpg?_=20180905162423',
       inStock: true,
       stockCount: 10,
       unit: 'per pair',
@@ -60,8 +57,7 @@ class ProductRepository {
       price: 12.00,
       category: ProductCategory.eggs,
       imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/'
-          'Quail_eggs.jpg/320px-Quail_eggs.jpg',
+          'https://images.unsplash.com/photo-1645218167737-7e9c23137641?w=400&auto=format&fm=png',
       inStock: true,
       stockCount: 200,
       unit: 'per dozen (12)',
@@ -75,8 +71,7 @@ class ProductRepository {
       price: 28.00,
       category: ProductCategory.eggs,
       imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/'
-          'Quail_eggs.jpg/320px-Quail_eggs.jpg',
+          'https://images.unsplash.com/photo-1645218167737-7e9c23137641?w=400&auto=format&fm=png',
       inStock: true,
       stockCount: 150,
       unit: 'per tray (30)',
@@ -90,8 +85,7 @@ class ProductRepository {
       price: 20.00,
       category: ProductCategory.eggs,
       imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/'
-          'Quail_eggs.jpg/320px-Quail_eggs.jpg',
+          'https://images.unsplash.com/photo-1645218167737-7e9c23137641?w=400&auto=format&fm=png',
       inStock: false,
       stockCount: 0,
       unit: 'per dozen (12)',
