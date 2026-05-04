@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:quail_order_app/core/theme/app_theme.dart';
 import 'package:quail_order_app/data/models/product.dart';
 import 'package:quail_order_app/features/catalog/controllers/catalog_controller.dart';
+import 'package:quail_order_app/features/cart/controllers/cart_controller.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({super.key});
@@ -240,11 +241,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        Get.snackbar(
-                          'Coming soon',
-                          'Cart will be wired in Step 5',
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
+                        CartController.to.addItem(product, _quantity);
+                        Get.back();
                       },
                       icon: const Icon(Icons.shopping_cart_outlined),
                       label: Text(
