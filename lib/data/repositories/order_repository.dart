@@ -10,8 +10,7 @@ class OrderRepository {
   final List<Order> _orders = [];
 
   List<Order> getAll() =>
-      List.unmodifiable(_orders)
-        ..sort((a, b) => b.placedAt.compareTo(a.placedAt));
+      List.of(_orders)..sort((a, b) => b.placedAt.compareTo(a.placedAt));
 
   List<Order> getForUser(String userId) =>
       _orders.where((o) => o.userId == userId).toList()
