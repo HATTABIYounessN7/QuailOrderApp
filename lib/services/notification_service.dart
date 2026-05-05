@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quail_order_app/core/constants/app_constants.dart';
@@ -12,20 +13,21 @@ class NotificationService {
   static const MethodChannel _nativeChannel = MethodChannel(
     'com.quailapp/notifications',
   );
+
   bool _initialised = false;
 
   Future<void> init() async {
     if (_initialised) return;
 
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
-    const DarwinInitializationSettings iosSettings =
-        DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
-        );
+    const iosSettings = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
 
     await _plugin.initialize(
       settings: const InitializationSettings(
@@ -34,20 +36,18 @@ class NotificationService {
       ),
       onDidReceiveNotificationResponse: _onTap,
     );
-
     await _plugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >()
         ?.requestNotificationsPermission();
 
-    // Listen for calls coming from Java (future FCM integration)
     _nativeChannel.setMethodCallHandler((call) async {
       if (call.method == 'showNotification') {
-        final args = call.arguments as Map;
+        final args = Map<String, String>.from(call.arguments as Map);
         await showOrderUpdate(
-          orderId: args['orderId'] as String,
-          newStatus: args['newStatus'] as String,
+          orderId: args['orderId'] ?? '',
+          newStatus: args['newStatus'] ?? '',
         );
       }
     });
@@ -59,10 +59,16 @@ class NotificationService {
     required String orderId,
     required String newStatus,
   }) async {
+    if (orderId.isEmpty) return;
+
+    final shortId = orderId.length >= 6
+        ? orderId.substring(0, 6).toUpperCase()
+        : orderId;
+
     await _plugin.show(
       id: orderId.hashCode,
-      title: 'Order #${orderId.substring(0, 6).toUpperCase()}',
-      body: 'Status updated: $newStatus',
+      title: 'Order #$shortId',
+      body: 'Status updated to: $newStatus',
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           NotifChannel.channelId,
@@ -70,6 +76,8 @@ class NotificationService {
           channelDescription: NotifChannel.channelDesc,
           importance: Importance.high,
           priority: Priority.high,
+          enableVibration: true,
+          playSound: true,
         ),
         iOS: DarwinNotificationDetails(
           presentAlert: true,
@@ -82,7 +90,9 @@ class NotificationService {
   }
 
   void _onTap(NotificationResponse response) {
-    // Will navigate to order detail once routing is wired up
-    // Get.toNamed(Routes.order(response.payload!));
+    final orderId = response.payload;
+    if (orderId != null && orderId.isNotEmpty) {
+      Get.toNamed(Routes.order(orderId));
+    }
   }
 }
