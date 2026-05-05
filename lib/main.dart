@@ -6,10 +6,14 @@ import 'package:quail_order_app/core/router/app_router.dart';
 import 'package:quail_order_app/core/theme/app_theme.dart';
 import 'package:quail_order_app/features/catalog/controllers/catalog_controller.dart';
 import 'package:quail_order_app/services/notification_service.dart';
+import 'package:quail_order_app/features/orders/controllers/orders_controller.dart';
+import 'package:quail_order_app/features/auth/controllers/auth_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Get.put(AuthController());
   Get.put(CatalogController());
+  Get.put(OrdersController());
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
