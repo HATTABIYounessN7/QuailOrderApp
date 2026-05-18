@@ -20,4 +20,18 @@ class ProductRepository {
       return null;
     }
   }
+
+  Future<Product> create(Product product) async {
+    final data = await ApiClient.instance.post('/products', product.toJson());
+    return Product.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<Product> update(Product product) async {
+    final data = await ApiClient.instance.put('/products/${product.id}', product.toJson());
+    return Product.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<void> delete(String id) async {
+    await ApiClient.instance.delete('/products/$id');
+  }
 }

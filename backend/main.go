@@ -223,7 +223,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
@@ -370,6 +370,87 @@ func handleOrderByID(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusNotFound, map[string]string{"error": "order not found"})
 }
 
+// POST /api/products
+func handleCreateProduct(w http.ResponseWriter, r *http.Request) {
+	var p Product
+	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid request body: " + err.Error()})
+		return
+	}
+	if p.Name == "" || p.Category == "" || p.Price <= 0 || p.Unit == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "name, category, price and unit are required"})
+		return
+	}
+	if p.Category != "quail" && p.Category != "eggs" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "category must be 'quail' or 'eggs'"})
+		return
+	}
+	if p.StockCount < 0 {
+		p.StockCount = 0
+	}
+	p.InStock = p.StockCount > 0
+	prefix := "q"
+	if p.Category == "eggs" {
+		prefix = "e"
+	}
+	p.ID = fmt.Sprintf("%s_%d", prefix, time.Now().UnixMilli())
+
+	productsMu.Lock()
+	products = append(products, p)
+	productsMu.Unlock()
+
+	writeJSON(w, http.StatusCreated, p)
+}
+
+// PUT /api/products/{id}
+func handleUpdateProduct(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	var update Product
+	if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid request body: " + err.Error()})
+		return
+	}
+	if update.Name == "" || update.Category == "" || update.Price <= 0 || update.Unit == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "name, category, price and unit are required"})
+		return
+	}
+	if update.Category != "quail" && update.Category != "eggs" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "category must be 'quail' or 'eggs'"})
+		return
+	}
+	if update.StockCount < 0 {
+		update.StockCount = 0
+	}
+	update.InStock = update.StockCount > 0
+	update.ID = id // always preserve the original ID
+
+	productsMu.Lock()
+	defer productsMu.Unlock()
+	for i, p := range products {
+		if p.ID == id {
+			products[i] = update
+			writeJSON(w, http.StatusOK, products[i])
+			return
+		}
+	}
+	writeJSON(w, http.StatusNotFound, map[string]string{"error": "product not found"})
+}
+
+// DELETE /api/products/{id}
+func handleDeleteProduct(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	productsMu.Lock()
+	defer productsMu.Unlock()
+	for i, p := range products {
+		if p.ID == id {
+			products = append(products[:i], products[i+1:]...)
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+	}
+	writeJSON(w, http.StatusNotFound, map[string]string{"error": "product not found"})
+}
+
 // POST /api/orders
 func handleCreateOrder(w http.ResponseWriter, r *http.Request) {
 	var order Order
@@ -513,7 +594,10 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /api/products", handleProducts)
+	mux.HandleFunc("POST /api/products", handleCreateProduct)
 	mux.HandleFunc("GET /api/products/{id}", handleProductByID)
+	mux.HandleFunc("PUT /api/products/{id}", handleUpdateProduct)
+	mux.HandleFunc("DELETE /api/products/{id}", handleDeleteProduct)
 	mux.HandleFunc("POST /api/auth/login", handleLogin)
 	mux.HandleFunc("GET /api/users/{id}", handleUserByID)
 	mux.HandleFunc("GET /api/orders", handleGetOrders)
