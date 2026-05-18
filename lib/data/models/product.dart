@@ -37,4 +37,16 @@ class Product {
     stockCount: j['stockCount'] as int,
     unit: j['unit'] as String,
   );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'description': description,
+    'price': price,
+    'category': category,
+    'imageUrl': imageUrl,
+    'inStock': inStock,
+    'stockCount': stockCount,
+    'unit': unit,
+  };
 }

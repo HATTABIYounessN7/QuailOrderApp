@@ -3,25 +3,31 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  static const Color primary = Color(0xFF6B4226);
-  static const Color primaryLight = Color(0xFF9C6644);
-  static const Color primaryDark = Color(0xFF3E2211);
-  static const Color accent = Color(0xFF8FAF5A);
-  static const Color accentLight = Color(0xFFB8CF88);
-  static const Color accentDark = Color(0xFF5F7E2E);
-  static const Color background = Color(0xFFFBF8F4);
-  static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceVariant = Color(0xFFF3EDE6);
+  // ── Brand ─────────────────────────────────────────────────────────────────
+  static const Color primary      = Color(0xFF2E7D52); // forest green
+  static const Color primaryLight = Color(0xFF4FA874);
+  static const Color primaryDark  = Color(0xFF1A5C38);
+  static const Color accent       = Color(0xFFE8992A); // golden amber
+  static const Color accentLight  = Color(0xFFF2BA6A);
+  static const Color accentDark   = Color(0xFFB87010);
 
-  static const Color pending = Color(0xFFF5A623);
-  static const Color inRoute = Color(0xFF4A90D9);
-  static const Color delivered = Color(0xFF5BAD6F);
-  static const Color cancelled = Color(0xFFD0454C);
+  // ── Surfaces ──────────────────────────────────────────────────────────────
+  static const Color background     = Color(0xFFF3F5F0);
+  static const Color surface        = Color(0xFFFFFFFF);
+  static const Color surfaceVariant = Color(0xFFE6EFEA);
 
-  static const Color textPrimary = Color(0xFF1A1207);
-  static const Color textSecondary = Color(0xFF6B5B4E);
-  static const Color textHint = Color(0xFFAFA198);
-  static const Color divider = Color(0xFFE8E0D8);
+  // ── Status ────────────────────────────────────────────────────────────────
+  static const Color pending   = Color(0xFFE8992A);
+  static const Color confirmed = Color(0xFF2B7FCC);
+  static const Color inRoute   = Color(0xFF6B5CE7);
+  static const Color delivered = Color(0xFF2E7D52);
+  static const Color cancelled = Color(0xFFCF3B3B);
+
+  // ── Text ──────────────────────────────────────────────────────────────────
+  static const Color textPrimary   = Color(0xFF141F16);
+  static const Color textSecondary = Color(0xFF465544);
+  static const Color textHint      = Color(0xFF95A692);
+  static const Color divider       = Color(0xFFD0DFCB);
 }
 
 class AppTextStyles {
@@ -62,7 +68,7 @@ class AppTextStyles {
   static const TextStyle price = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w700,
-    color: AppColors.primary,
+    color: AppColors.accent,
   );
 }
 
@@ -86,11 +92,17 @@ class AppTheme {
       centerTitle: true,
       titleTextStyle: AppTextStyles.titleLarge,
     ),
+    tabBarTheme: const TabBarThemeData(
+      labelColor: Colors.white,
+      unselectedLabelColor: Colors.white60,
+      indicatorColor: AppColors.accent,
+      dividerColor: Colors.transparent,
+    ),
     cardTheme: CardThemeData(
       color: AppColors.surface,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         side: const BorderSide(color: AppColors.divider),
       ),
     ),
@@ -100,9 +112,14 @@ class AppTheme {
         foregroundColor: Colors.white,
         textStyle: AppTextStyles.labelLarge,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         elevation: 0,
       ),
+    ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: AppColors.primary,
+      foregroundColor: Colors.white,
+      elevation: 2,
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -149,7 +166,7 @@ extension OrderStatusStyle on String {
       case 'pending':
         return AppColors.pending;
       case 'confirmed':
-        return AppColors.inRoute;
+        return AppColors.confirmed;
       case 'in_route':
         return AppColors.inRoute;
       case 'delivered':

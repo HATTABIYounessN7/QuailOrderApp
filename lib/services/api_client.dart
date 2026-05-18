@@ -19,6 +19,10 @@ class ApiClient {
     return params != null ? uri.replace(queryParameters: params) : uri;
   }
 
+  static Map<String, String> get _jsonHeaders => {
+        'Content-Type': 'application/json; charset=utf-8',
+      };
+
   Future<dynamic> get(String path, {Map<String, String>? params}) async {
     final res = await http.get(_uri(path, params));
     _check(res);
@@ -28,8 +32,18 @@ class ApiClient {
   Future<dynamic> post(String path, Map<String, dynamic> body) async {
     final res = await http.post(
       _uri(path),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
+      headers: _jsonHeaders,
+      body: utf8.encode(jsonEncode(body)),
+    );
+    _check(res);
+    return jsonDecode(res.body);
+  }
+
+  Future<dynamic> put(String path, Map<String, dynamic> body) async {
+    final res = await http.put(
+      _uri(path),
+      headers: _jsonHeaders,
+      body: utf8.encode(jsonEncode(body)),
     );
     _check(res);
     return jsonDecode(res.body);
@@ -38,11 +52,16 @@ class ApiClient {
   Future<dynamic> patch(String path, Map<String, dynamic> body) async {
     final res = await http.patch(
       _uri(path),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
+      headers: _jsonHeaders,
+      body: utf8.encode(jsonEncode(body)),
     );
     _check(res);
     return jsonDecode(res.body);
+  }
+
+  Future<void> delete(String path) async {
+    final res = await http.delete(_uri(path));
+    if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
   }
 
   void _check(http.Response res) {
