@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quail_order_app/core/constants/app_constants.dart';
@@ -28,13 +29,7 @@ class CartController extends GetxController {
       items.add(CartItem(product: product, quantity: quantity));
     }
 
-    Get.snackbar(
-      'Added to cart',
-      '${product.name} x$quantity',
-      snackPosition: SnackPosition.BOTTOM,
-      margin: const EdgeInsets.all(16),
-      duration: const Duration(seconds: 2),
-    );
+
   }
 
   void removeItem(String productId) {
@@ -82,11 +77,15 @@ class CartController extends GetxController {
       Get.snackbar(
         'Order Failed',
         msg,
-        snackPosition: SnackPosition.BOTTOM,
+        icon: Icon(CupertinoIcons.xmark, color: Colors.white,),
+        snackPosition: SnackPosition.TOP,
         margin: const EdgeInsets.all(16),
-        duration: const Duration(seconds: 4),
-        backgroundColor: Colors.red.shade100,
+        backgroundColor: Color(0x99830000),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
       );
+
+
       return;
     }
 
@@ -95,9 +94,12 @@ class CartController extends GetxController {
     Get.snackbar(
       'Order placed successfully!',
       'Your order #${order.id.substring(0, 6).toUpperCase()} is being prepared.',
-      snackPosition: SnackPosition.BOTTOM,
+      icon: Icon(CupertinoIcons.check_mark_circled, color: Colors.white,),
+      snackPosition: SnackPosition.TOP,
       margin: const EdgeInsets.all(16),
-      duration: const Duration(seconds: 4),
+      backgroundColor: Color(0x9900791E),
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
     );
   }
 

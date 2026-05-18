@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quail_order_app/core/theme/app_theme.dart';
@@ -243,6 +244,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       onPressed: () {
                         CartController.to.addItem(product, _quantity);
                         Get.back();
+                        Get.snackbar(
+                          'Added to cart',
+                          '${product.name} x$_quantity',
+                          icon: Icon(CupertinoIcons.cart, color: Colors.white,),
+                          snackPosition: SnackPosition.TOP,
+                          margin: const EdgeInsets.all(16),
+                          backgroundColor: Color(0x999B5824),
+                          colorText: Colors.white,
+                          duration: const Duration(seconds: 2),
+                        );
                       },
                       icon: const Icon(Icons.shopping_cart_outlined),
                       label: Text(
