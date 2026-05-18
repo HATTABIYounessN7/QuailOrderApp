@@ -28,7 +28,9 @@ Future<void> main() async {
     ),
   );
 
-  await NotificationService.instance.init();
+  try {
+    await NotificationService.instance.init();
+  } catch (_) {}
 
   runApp(const MyApp());
 }

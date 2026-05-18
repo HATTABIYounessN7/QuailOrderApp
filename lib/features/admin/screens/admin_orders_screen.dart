@@ -77,6 +77,10 @@ class AdminOrdersScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Expanded(
               child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
                 if (controller.orders.isEmpty) {
                   return const Center(
                     child: Column(

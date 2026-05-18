@@ -9,9 +9,22 @@ class CatalogController extends GetxController {
   final RxList<Product> products = <Product>[].obs;
   final RxString selectedCategory = ProductCategory.all.obs;
   final RxString searchQuery = ''.obs;
+  final RxBool isLoading = false.obs;
 
-  void loadProducts() {
-    products.value = ProductRepository.instance.getAll();
+  @override
+  void onInit() {
+    super.onInit();
+    loadProducts();
+  }
+
+  Future<void> loadProducts() async {
+    isLoading.value = true;
+    try {
+      final all = await ProductRepository.instance.getAll();
+      products.value = all;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void filterByCategory(String category) {
@@ -23,9 +36,12 @@ class CatalogController extends GetxController {
   }
 
   List<Product> get filteredProducts {
+    // isLoading + selectedCategory + searchQuery are the reactive triggers;
+    // when they change Obx rebuilds and we read products as a plain List.
+    final all = List<Product>.from(products);
     var list = selectedCategory.value == ProductCategory.all
-        ? ProductRepository.instance.getAll()
-        : ProductRepository.instance.getByCategory(selectedCategory.value);
+        ? all
+        : all.where((p) => p.category == selectedCategory.value).toList();
 
     if (searchQuery.value.isNotEmpty) {
       list = list
@@ -39,5 +55,11 @@ class CatalogController extends GetxController {
     return list;
   }
 
-  Product? getById(String id) => ProductRepository.instance.findById(id);
+  Product? getById(String id) {
+    try {
+      return products.firstWhere((p) => p.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
 }

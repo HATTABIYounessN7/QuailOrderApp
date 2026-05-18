@@ -76,9 +76,9 @@ class Order {
     'deliveryAddress': deliveryAddress,
     'phone': phone,
     'items': items.map((i) => i.toJson()).toList(),
-    'placedAt': placedAt.toIso8601String(),
+    'placedAt': placedAt.toUtc().toIso8601String(),
     'status': status,
-    'updatedAt': updatedAt?.toIso8601String(),
+    'updatedAt': updatedAt?.toUtc().toIso8601String(),
   };
 
   factory Order.fromJson(Map<String, dynamic> j) => Order(

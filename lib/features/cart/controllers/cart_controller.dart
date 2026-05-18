@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quail_order_app/core/constants/app_constants.dart';
@@ -6,6 +8,7 @@ import 'package:quail_order_app/data/models/order.dart';
 import 'package:quail_order_app/data/models/product.dart';
 import 'package:quail_order_app/data/repositories/order_repository.dart';
 import 'package:quail_order_app/features/auth/controllers/auth_controller.dart';
+import 'package:quail_order_app/services/api_client.dart';
 
 class CartController extends GetxController {
   static CartController get to => Get.find();
@@ -68,11 +71,27 @@ class CartController extends GetxController {
       status: OrderStatus.pending,
     );
 
-    await OrderRepository.instance.addOrder(order);
+    try {
+      await OrderRepository.instance.addOrder(order);
+    } on ApiException catch (e) {
+      String msg = 'Failed to place order. Please try again.';
+      try {
+        final body = jsonDecode(e.message) as Map<String, dynamic>;
+        msg = (body['error'] as String?) ?? msg;
+      } catch (_) {}
+      Get.snackbar(
+        'Order Failed',
+        msg,
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 4),
+        backgroundColor: Colors.red.shade100,
+      );
+      return;
+    }
+
     clearCart();
-
     Get.offAllNamed(Routes.home);
-
     Get.snackbar(
       'Order placed successfully!',
       'Your order #${order.id.substring(0, 6).toUpperCase()} is being prepared.',

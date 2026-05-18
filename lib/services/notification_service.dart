@@ -36,11 +36,14 @@ class NotificationService {
       ),
       onDidReceiveNotificationResponse: _onTap,
     );
-    await _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestNotificationsPermission();
+
+    try {
+      await _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.requestNotificationsPermission();
+    } catch (_) {}
 
     _nativeChannel.setMethodCallHandler((call) async {
       if (call.method == 'showNotification') {

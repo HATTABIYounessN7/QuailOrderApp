@@ -5,8 +5,19 @@ import 'package:quail_order_app/core/theme/app_theme.dart';
 import 'package:quail_order_app/features/orders/controllers/orders_controller.dart';
 import 'package:quail_order_app/features/orders/widgets/order_card.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
+
+  @override
+  State<OrdersScreen> createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  @override
+  void initState() {
+    super.initState();
+    OrdersController.to.loadOrders();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +43,9 @@ class OrdersScreen extends StatelessWidget {
 
             Expanded(
               child: Obx(() {
-                controller.loadOrders();
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
                 if (controller.orders.isEmpty) {
                   return const Center(
@@ -67,7 +80,7 @@ class OrdersScreen extends StatelessWidget {
                 }
 
                 return RefreshIndicator(
-                  onRefresh: () async => controller.loadOrders(),
+                  onRefresh: controller.loadOrders,
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
                     itemCount: controller.orders.length,

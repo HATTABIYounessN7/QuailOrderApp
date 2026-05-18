@@ -43,7 +43,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       phone: _phoneController.text.trim(),
     );
 
-    setState(() => _isLoading = false);
+    if (mounted) setState(() => _isLoading = false);
   }
 
   @override

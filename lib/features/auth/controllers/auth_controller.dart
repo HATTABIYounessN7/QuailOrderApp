@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:quail_order_app/core/constants/app_constants.dart';
 import 'package:quail_order_app/data/models/app_user.dart';
-import 'package:quail_order_app/data/repositories/order_repository.dart';
 import 'package:quail_order_app/data/repositories/user_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,19 +23,16 @@ class AuthController extends GetxController {
 
   Future<void> _restoreSession() async {
     final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString(PrefKeys.userId);
-
-    if (userId != null) {
-      final user = UserRepository.instance.findById(userId);
-      if (user != null) {
-        currentUser.value = user;
-        await OrderRepository.instance.load();
-      }
+    final userJson = prefs.getString('userData');
+    if (userJson != null) {
+      currentUser.value = AppUser.fromJson(
+        jsonDecode(userJson) as Map<String, dynamic>,
+      );
     }
   }
 
   Future<bool> login(String email, String password) async {
-    final user = UserRepository.instance.login(
+    final user = await UserRepository.instance.login(
       email.trim().toLowerCase(),
       password.trim(),
     );
@@ -45,8 +43,7 @@ class AuthController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(PrefKeys.userId, user.id);
     await prefs.setString(PrefKeys.userRole, user.role.name);
-
-    await OrderRepository.instance.load();
+    await prefs.setString('userData', jsonEncode(user.toJson()));
     return true;
   }
 
@@ -56,6 +53,7 @@ class AuthController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(PrefKeys.userId);
     await prefs.remove(PrefKeys.userRole);
+    await prefs.remove('userData');
 
     Get.offAllNamed(Routes.login);
   }

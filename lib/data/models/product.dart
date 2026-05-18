@@ -25,4 +25,16 @@ class Product {
 
   bool get isEgg => category == ProductCategory.eggs;
   bool get isQuail => category == ProductCategory.quail;
+
+  factory Product.fromJson(Map<String, dynamic> j) => Product(
+    id: j['id'] as String,
+    name: j['name'] as String,
+    description: j['description'] as String,
+    price: (j['price'] as num).toDouble(),
+    category: j['category'] as String,
+    imageUrl: j['imageUrl'] as String,
+    inStock: j['inStock'] as bool,
+    stockCount: j['stockCount'] as int,
+    unit: j['unit'] as String,
+  );
 }

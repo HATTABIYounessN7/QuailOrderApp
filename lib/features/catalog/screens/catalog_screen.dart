@@ -53,6 +53,10 @@ class CatalogScreen extends StatelessWidget {
                 controller.selectedCategory.value;
                 controller.searchQuery.value;
 
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
                 final products = controller.filteredProducts;
 
                 if (products.isEmpty) {
