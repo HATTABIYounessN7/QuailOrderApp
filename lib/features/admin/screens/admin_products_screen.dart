@@ -196,7 +196,7 @@ class _ProductRow extends StatelessWidget {
 
           // Actions
           SizedBox(
-            width: 76,
+            width: 96,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
